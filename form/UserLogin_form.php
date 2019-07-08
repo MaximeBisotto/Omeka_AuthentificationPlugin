@@ -45,5 +45,23 @@ class Omeka_Form_Login_Email extends Omeka_Form
                 array('HtmlTag', array('tag' => 'div', 'class' => 'field')))));
         $this->addDisplayGroup(array('email', 'password', 'remember'), 'login');
         $this->addElement('submit', 'submit', array('label' => __('Log In')));
+
+//        $tag = new Zend_Form_Element_Html('login_cas');
+//        $tag->setValue('<a href="/users/cas">Connecte toi avec l\'Université d\'Avignon</a>');
+//        $this->addElement($tag);
+
+        $this->addElement(new Zend_Form_Element_Note(array(
+            'name' => 'login_cas',
+            'value' => __('Se connecter avec l\'Université d\'Avignon'),
+            'decorators' => array(
+                array('ViewHelper'),
+                array('HtmlTag', array(
+                    'tag' => 'a',
+                    'href' => $this->getView()->url('/users/cas')                   ))
+                ),)
+
+            )
+        );
+
     }
 }

@@ -26,6 +26,9 @@ $phpcas_path = dirname(__FILE__) . '/../librairie/phpCAS/CAS.php';
 // Full Hostname of your CAS Server
 $cas_host = 'cas.univ-avignon.fr';
 
+// CAS version
+$cas_version = '3.0';
+
 // Context of the CAS Server
 $cas_context = '/cas';
 
@@ -33,7 +36,7 @@ $cas_context = '/cas';
 $cas_port = 443;
 
 // Path to the ca chain that issued the cas server certificate
-$cas_server_ca_cert_path = '/path/to/cachain.pem';
+$cas_server_ca_cert_path = '';
 
 //////////////////////////////////////////
 // Advanced Config for special purposes //
