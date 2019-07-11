@@ -6,8 +6,9 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
      * @var array filter for the plugin
      */
     protected $_filters = array(
-        'login_form',
+//        'login_form',
         'admin_whitelist',
+//        'login_adapter',
 //        'public_navigation_admin_bar',
 //        'public_show_admin_bar',
 
@@ -17,17 +18,17 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
      * @var array Hooks for the plugin.
      */
     protected $_hooks = array(
-      'initialize',
-      'define_routes',
+//        'initialize',
+        'define_routes',
     );
 
     /**
      * Add the translations.
      */
-    public function hookInitialize()
-    {
-        // add_translation_source(dirname(__FILE__) . '/languages');
-    }
+//    public function hookInitialize()
+//    {
+//        // add_translation_source(dirname(__FILE__) . '/languages');
+//    }
 
     /**
      * Add the routes
@@ -48,7 +49,6 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
 //                    )
 //                )
 //            );
-
             $router->addRoute(
                 'admin_user_login',
                 new Zend_Controller_Router_Route(
@@ -99,22 +99,22 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
             )
         );
 
-        $router->addRoute(
-            'changePassword',
-            new Zend_Controller_Router_Route(
-                'users/forgotPassword',
-                array(
-                    'module'       => 'authentification',
-                    'controller'   => 'user',
-                    'action'       => 'changePassword',
-                )
-            )
-        );
+//        $router->addRoute(
+//            'changePassword',
+//            new Zend_Controller_Router_Route(
+//                'users/forgotPassword',
+//                array(
+//                    'module'       => 'authentification',
+//                    'controller'   => 'user',
+//                    'action'       => 'changePassword',
+//                )
+//            )
+//        );
     }
 
-    public function filterLoginForm($form) {
-        echo get_view()->partial('user/redirectLogin.php');
-    }
+//    public function filterLoginForm($form) {
+//        echo get_view()->partial('user/redirectLogin.php');
+//    }
 
     /**
      * Filter the admin interface whitelist.
@@ -123,6 +123,13 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function filterAdminWhitelist($whitelist)
     {
+//        array(
+//            array('module' => 'authentification', 'controller' => 'users', 'action' => 'loginadmin'),
+//            array('module' => 'authentification', 'controller' => 'users', 'action' => 'casadmin'),
+//////            array('controller' => 'users', 'action' => 'forgot-password'),
+//////            array('controller' => 'installer', 'action' => 'notify'),
+//////            array('controller' => 'error', 'action' => 'error')
+//        );
         $whitelist[] = array(
             'module' => 'authentification',
             'controller' => 'user',
@@ -132,35 +139,8 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
         $whitelist[] = array(
             'module' => 'authentification',
             'controller' => 'user',
-            'action' => 'cas'
+            'action' => 'casadmin'
         );
         return $whitelist;
-    }
-
-    public function filterPublicNavigationAdminBar($navLinks)
-    {
-        //Clobber the default admin link if user is guest
-        $user = current_user();
-        if ($user == null)
-        $loginLabel = get_option('guest_user_login_text') ? get_option('guest_user_login_text') : __('Login');
-        $registerLabel = get_option('guest_user_register_text') ? get_option('guest_user_register_text') : __('Register');
-        $navLinks = array(
-            'guest-user-login' => array(
-                'id' => 'guest-user-login',
-                'label' => $loginLabel,
-                'uri' => url('/users/login')
-            ),
-            'guest-user-register' => array(
-                'id' => 'guest-user-register',
-                'label' => $registerLabel,
-                'uri' => url('/users/register'),
-            )
-        );
-        return $navLinks;
-    }
-
-    public function filterPublicShowAdminBar($show)
-    {
-        return true;
     }
 }

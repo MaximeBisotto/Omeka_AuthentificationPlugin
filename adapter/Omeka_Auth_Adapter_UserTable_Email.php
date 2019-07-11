@@ -51,39 +51,3 @@ class Omeka_Auth_Adapter_UserTable_Email extends Zend_Auth_Adapter_DbTable
         return $correctResult;
     }
 }
-
-class Auth_UserTable_Email {
-
-    public function authentificate($email, $password) {
-        $select = new Omeka_Db_Select();
-        $select->from('omeka_users')
-               ->where('email = ?', $email)
-               ->where('SHA1(CONCAT(salt, ?))', $password)
-               ->where('active = 1')
-               ->limit(1, 0);
-
-        echo $select;
-
-        require_once 'Zend/Db/Table/Abstract.php';
-        $zendDb = Zend_Db_Table_Abstract::getDefaultAdapter();
-
-        if ($zendDb->getFetchMode() != Zend_DB::FETCH_ASSOC) {
-            $origDbFetchMode = $this->_zendDb->getFetchMode();
-            $zendDb->setFetchMode(Zend_DB::FETCH_ASSOC);
-        }
-
-        $resultIdentities = $zendDb->fetchAll($select);
-        var_dump($resultIdentities);
-        if (isset($origDbFetchMode)) {
-            $zendDb->setFetchMode($origDbFetchMode);
-            unset($origDbFetchMode);
-        }
-
-        var_dump($resultIdentities);
-        if (count($resultIdentities) == 1) {
-            return new Zend_Auth_Result(1, $this->$resultIdentities[0]['id']);
-        }
-
-    }
-
-}

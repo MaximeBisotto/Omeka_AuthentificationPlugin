@@ -28,12 +28,10 @@ class Omeka_Auth_Adapter_CAS implements Zend_Auth_Adapter_Interface
      *
      * @return Zend_Auth_Result $resultIdentity
      */
-    public function authenticate()    {
+    public function authenticate() {
         phpCAS::forceAuthentication();
 
         $this->recupInfoCASStrategie->setData(phpCAS::getAttributes());
-
-//        var_dump($this->attr);
 
         $email = $this->recupInfoCASStrategie->getEmailData();
         require_once dirname(__FILE__) . '/../../../application/models/Table/User.php';
@@ -44,6 +42,11 @@ class Omeka_Auth_Adapter_CAS implements Zend_Auth_Adapter_Interface
                 Zend_Auth_Result::FAILURE,
                 -1, "Non enregistré sur Omeka");
         }
+
+//        if ($user->username != $this->recupInfoCASStrategie->getUsername()) {
+//            $where = $userTab->getAdapter()->quoteInto('id = ?', $user->id);
+//            $userTab->update(array( 'username' => $this->recupInfoCASStrategie->getUsername()), $where);
+//        }
         return new Zend_Auth_Result(
             Zend_Auth_Result::SUCCESS,
             $user->id,

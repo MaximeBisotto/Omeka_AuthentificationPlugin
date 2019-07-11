@@ -7,6 +7,8 @@ abstract class abstractRecupInfoCAS
 
     public abstract function getEmailData();
 
+    public abstract function getUsername();
+
     /**
      * @param mixed $data
      */

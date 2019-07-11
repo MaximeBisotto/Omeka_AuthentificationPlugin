@@ -9,4 +9,9 @@ class RecupInfoCAS_Avignon extends abstractRecupInfoCAS
     {
         return $this->data["mail"];
     }
+
+    public function getUsername()
+    {
+        return $this->data["cn"];
+    }
 }
