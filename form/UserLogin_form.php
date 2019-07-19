@@ -10,7 +10,7 @@ class Omeka_Form_Login_Email extends Omeka_Form
         $this->setMethod('post');
         $this->setAttrib('id', 'login-form');
         $this->addElement('text', 'email', array(
-            'label' => __('Email'),
+            'label' => __('Adresse de messagerie'),
             'required' => true,
             'validators' => array(
                 array('validator' => 'NotEmpty',
@@ -19,7 +19,7 @@ class Omeka_Form_Login_Email extends Omeka_Form
                             'isEmpty' => __('email cannot be empty.'))))),
             'decorators' => array(
                 'ViewHelper',
-                array(array('input' => 'HtmlTag'), array('tag' => 'div', 'class' => 'inputs six columns omega')),
+                array(array('input' => 'HtmlTag'), array('tag' => 'div', 'class' => 'inputs four columns omega')),
                 array('Label', array('tag' => 'div', 'tagClass' => 'two columns alpha')),
                 array('HtmlTag', array('tag' => 'div', 'class' => 'field')))));
         $this->addElement('password', 'password', array(
@@ -32,7 +32,7 @@ class Omeka_Form_Login_Email extends Omeka_Form
                             'isEmpty' => __('Password cannot be empty.'))))),
             'decorators' => array(
                 'ViewHelper',
-                array(array('input' => 'HtmlTag'), array('tag' => 'div', 'class' => 'inputs six columns omega')),
+                array(array('input' => 'HtmlTag'), array('tag' => 'div', 'class' => 'inputs four columns omega')),
                 array('Label', array('tag' => 'div', 'tagClass' => 'two columns alpha')),
                 array('HtmlTag', array('tag' => 'div', 'class' => 'field')))));
         $this->addElement('checkbox', 'remember', array(
@@ -40,28 +40,10 @@ class Omeka_Form_Login_Email extends Omeka_Form
             'label' => __('Remember Me?'),
             'decorators' => array(
                 'ViewHelper',
-                array(array('input' => 'HtmlTag'), array('tag' => 'div', 'class' => 'inputs six columns omega')),
+                array(array('input' => 'HtmlTag'), array('tag' => 'div', 'class' => 'inputs four columns omega')),
                 array('Label', array('tag' => 'div', 'tagClass' => 'two columns alpha')),
                 array('HtmlTag', array('tag' => 'div', 'class' => 'field')))));
         $this->addDisplayGroup(array('email', 'password', 'remember'), 'login');
         $this->addElement('submit', 'submit', array('label' => __('Log In')));
-
-//        $tag = new Zend_Form_Element_Html('login_cas');
-//        $tag->setValue('<a href="/users/cas">Connecte toi avec l\'Université d\'Avignon</a>');
-//        $this->addElement($tag);
-
-        $this->addElement(new Zend_Form_Element_Note(array(
-            'name' => 'login_cas',
-            'value' => __('Se connecter avec l\'Université d\'Avignon'),
-            'decorators' => array(
-                array('ViewHelper'),
-                array('HtmlTag', array(
-                    'tag' => 'a',
-                    'href' => $this->getView()->url('/users/cas')                   ))
-                ),)
-
-            )
-        );
-
     }
 }

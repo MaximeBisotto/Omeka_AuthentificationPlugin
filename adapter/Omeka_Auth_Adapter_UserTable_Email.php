@@ -40,7 +40,6 @@ class Omeka_Auth_Adapter_UserTable_Email extends Zend_Auth_Adapter_DbTable
      */
     protected function _authenticateValidateResult($resultIdentity)
     {
-        echo "dans l'authentification";
         $authResult = parent::_authenticateValidateResult($resultIdentity);
         if (!$authResult->isValid()) {
             return $authResult;

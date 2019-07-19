@@ -1,0 +1,120 @@
+Summary
+I) Add a other CAS
+II) Change the mail models send
+III) Change the version of phpCAS librarie
+IV) Folder tree use
+V) Resources
+VI) Contact
+
+I) For add a CAS to connect, you do:
+    1) Complete the CAS configuration, a exemple it's give
+                       (warning: the plugin don't is compatible with the CAS at config more complex (proxy, PGT Storage, cluster), you need to modify the code)
+        you need to complete:
+            - $cas_host : URL of the CAS
+            - $cas_version : version to the CAS protocol use
+            - $cas_context : path of the ticket storage (default: '/cas')
+            - $cas_port : port of the CAS (default: 443)
+            - $cas_server_ca_cert_path : path to the TLS certificate (default: '')
+
+    2) Complete the file config/route.php
+        In the array, you need to add a array with this information
+            - name : name of the route
+            - route : URI for users go connect with the CAS
+            - action : name of the function in the controller
+            - label : label print for a link to the CAS
+            - domaine : domaine use for the email
+            - etudiant : domaine use for student in the mail
+
+        ex:
+        array(
+                'name' => 'user_cas',
+                'route' => 'users/cas',
+                'action' => 'cas',
+                'label' => "Se connecter à l'Université d'Avignon",
+                'domaine' => 'univ-avignon.fr',
+                'etudiant' => 'alumni.univ-avignon.fr'
+        ),
+
+    3) Construct a class extends to abstractRecupInfoCAS in adapter/CAS_strategie to proccess the data recup to the CAS
+
+    4) Add the function public name with the action choose and "Action" and a other public function with the name of the action and "adminAction"
+        ex: if the name of the action is "cas", you need create the function "casAction" and "casadminAction"
+
+    In then function, you need to require the file "models/Connection" and the file with the CAS strategie and to construct this.
+    After you call the function cas to the class Connection. The param is $this,  the config file for connect with the CAS and the strategie.
+
+    ex:
+            public function casAction() //function for front interface
+        {
+            require_once dirname(__FILE__) . '/../models/Connection.php';
+            require_once dirname(__FILE__) . '/../adapter/CAS_strategie/RecupInfoCAS_Avignon.php'; //include strategie for the CAS
+            $recupInfoCAS = new RecupInfoCAS_Avignon(); //contruct strategie for the CAS
+            $url = Connection::cas($this, 'avignon.php', $recupInfoCAS); //connect the user with the CAS
+            $this->_helper->redirector->gotoUrl($url); //redirect the user to the good link
+        }
+
+        public function casadminAction() //function for back interface (admin interface)
+        {
+            // the same thinks
+        }
+
+II) For add a models of text mail depending of the organization, if is a student or not, etc , you need :
+    1) Create a file .php in the folder /mail with $subject and $body
+    2) Change the "if" if necessary and use "require" for include the file with the models of the mail in the function sendActivationEmail in the file UserController
+
+    Warning: you need write the mail in HTML, don't use \n for exemple
+
+    Actually, in the subject, replace all ---siteTitle--- by the name of the Omeka platform.
+    For the body :
+        - ---siteTitle--- is replace by the name of the Omeka platform
+        - ---urlActivation--- is replace by the URL for activate the account
+        - ---labelRoute--- is replace by the label corresponding to the link to the CAS
+
+    You can add a rule for replace after the if
+
+III) For change the phpCAS librairie:
+	Controls the changelog and if the change of phpCAS don't change the function use, replace the phpCAS by the new in the folder /librairie
+
+IV) Folder tree use
+    |---- adapter (contains the class for authentificate the user)
+    |				|
+    |				|---- Omeka_Auth_Adapter_CAS.php (class for connect with a CAS)
+    |				|---- Omeka_Auth_Adapter_UserTable_Email.php (class for connect with the database)
+    |				|---- CAS_strategie (for define how the data is recovered)
+    |										|
+    |										|---- abstractRecupInfoCAS (abstract class for define the stategie)
+    |
+    |---- config (configuration for the plugin)
+    |				|
+    |				|---- route.php (define the differents CAS use with their domain)
+    |				|---- CAS config (file for config the CAS connection)
+    |									|---- exemple.php (exemple of configuation)
+    |
+    |---- controller (contains the controller)
+    |					|
+    |					|---- UserController (rewrite the user route)
+    |
+    |---- form (contains the form change)
+    |				|
+    |				|---- UserLogin_form.php (redefine the login form)
+    |
+    |---- librairie (contains the librairie)
+    |
+    |---- mail (contains the text of the mail, can change if the user is in a organization, is a student, ...)
+    |
+    |---- models
+    |				|
+    |				|---- Connection.php (simplify the connection with the CAS)
+    |				|---- Tools (with a email, can return the organization or if is a student)
+    |
+    |---- view (contains the view)
+    |
+    |---- AuthentificationPlugin.php (define the route and the admin route accessible for all)
+    |
+    |---- plugin.ini (describe the plugin)
+
+V) Resources
+    More exemple for use phpCAS at https://github.com/apereo/phpCAS/tree/master/docs/examples
+
+VI) Contact
+    You can contact me at bisotto.maxime@gmail.com

@@ -6,7 +6,7 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
      * @var array filter for the plugin
      */
     protected $_filters = array(
-//        'login_form',
+        'login_form',
         'admin_whitelist',
 //        'login_adapter',
 //        'public_navigation_admin_bar',
@@ -38,17 +38,7 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
         $router = $args['router'];
 
         if (is_admin_theme()) {
-//            $router->addRoute(
-//                'changePassword',
-//                new Zend_Controller_Router_Route(
-//                    'users/forgotPassword',
-//                    array(
-//                        'module'       => 'authentification',
-//                        'controller'   => 'user',
-//                        'action'       => 'changePassword',
-//                    )
-//                )
-//            );
+
             $router->addRoute(
                 'admin_user_login',
                 new Zend_Controller_Router_Route(
@@ -61,18 +51,77 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
                 )
             );
 
+            require_once dirname(__FILE__) . '/config/route.php';
+
+            foreach ($route as $item) {
+                $name = 'admin_' . $item['name'];
+                $action = $item['action'] . 'admin';
+                $router->addRoute(
+                    $name,
+                    new Zend_Controller_Router_Route(
+                        $item['route'],
+                        array(
+                            'module'       => 'authentification',
+                            'controller'   => 'user',
+                            'action'       => $action,
+                        )
+                    )
+                );
+            }
+
+
             $router->addRoute(
-                'admin_user_cas',
+                'admin_adduser',
                 new Zend_Controller_Router_Route(
-                    'users/cas',
+                    'users/add',
                     array(
                         'module'       => 'authentification',
                         'controller'   => 'user',
-                        'action'       => 'casadmin',
+                        'action'       => 'add',
                     )
                 )
             );
+
+            $router->addRoute(
+                'admin_user_activate',
+                new Zend_Controller_Router_Route(
+                    'users/activate',
+                    array(
+                        'module'       => 'authentification',
+                        'controller'   => 'user',
+                        'action'       => 'activate',
+                    )
+                )
+            );
+
+//            $router->addRoute(
+//                'admin_users_forgot-password',
+//                new Zend_Controller_Router_Route(
+//                    'users/forgot-password',
+//                    array(
+//                        'module'       => 'authentification',
+//                        'controller'   => 'user',
+//                        'action'       => 'forgotPasswordadmin',
+//                    )
+//                )
+//            );
             return;
+        }
+
+        require_once dirname(__FILE__) . '/config/route.php';
+
+        foreach ($route as $item) {
+            $router->addRoute(
+                $item['name'],
+                new Zend_Controller_Router_Route(
+                    $item['route'],
+                    array(
+                        'module'       => 'authentification',
+                        'controller'   => 'user',
+                        'action'       => $item['action'],
+                    )
+                )
+            );
         }
 
         $router->addRoute(
@@ -88,33 +137,33 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
         );
 
         $router->addRoute(
-            'user_cas',
+            'user_noaccount',
             new Zend_Controller_Router_Route(
-                'users/cas',
+                'users/noaccount',
                 array(
                     'module'       => 'authentification',
                     'controller'   => 'user',
-                    'action'       => 'cas',
+                    'action'       => 'noaccount',
                 )
             )
         );
 
 //        $router->addRoute(
-//            'changePassword',
+//            'user_forgot-password',
 //            new Zend_Controller_Router_Route(
-//                'users/forgotPassword',
+//                'users/forgot-password',
 //                array(
 //                    'module'       => 'authentification',
 //                    'controller'   => 'user',
-//                    'action'       => 'changePassword',
+//                    'action'       => 'forgotPassword',
 //                )
 //            )
 //        );
     }
 
-//    public function filterLoginForm($form) {
-//        echo get_view()->partial('user/redirectLogin.php');
-//    }
+    public function filterLoginForm($form) {
+        echo get_view()->partial('user/redirectLogin.php');
+    }
 
     /**
      * Filter the admin interface whitelist.
@@ -123,24 +172,33 @@ class AuthentificationPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function filterAdminWhitelist($whitelist)
     {
-//        array(
-//            array('module' => 'authentification', 'controller' => 'users', 'action' => 'loginadmin'),
-//            array('module' => 'authentification', 'controller' => 'users', 'action' => 'casadmin'),
-//////            array('controller' => 'users', 'action' => 'forgot-password'),
-//////            array('controller' => 'installer', 'action' => 'notify'),
-//////            array('controller' => 'error', 'action' => 'error')
-//        );
         $whitelist[] = array(
             'module' => 'authentification',
             'controller' => 'user',
             'action' => 'loginadmin'
         );
 
+        include dirname(__FILE__) . '/config/route.php';
+
+        foreach ($route as $item) {
+            $action = $item['action'] . 'admin';
+            $whitelist[] = array(
+                'module' => 'authentification',
+                'controller' => 'user',
+                'action' => $action
+            );
+        }
         $whitelist[] = array(
             'module' => 'authentification',
             'controller' => 'user',
-            'action' => 'casadmin'
+            'action' => 'activate'
         );
+//
+//        $whitelist[] = array(
+//            'module' => 'authentification',
+//            'controller' => 'user',
+//            'action' => 'forgotPasswordadmin'
+//        );
         return $whitelist;
     }
 }

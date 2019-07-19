@@ -1,0 +1,43 @@
+#form {
+    background-color: #f6f7f2;
+    width: 80%;
+    padding-left: 5%;
+    margin-left: 10%;
+    text-align: center;
+    border: none;
+}
+
+#cas_link {
+    background-color: #f6f7f2;
+    padding-left:3%;
+    /*width:15%;*/
+    border: none;
+    border-left: red solid 1px;
+    height: 50%;
+    margin-right: 50px;
+}
+
+#content {
+    background-color: #f6f7f2;
+    background-image: none;
+    margin-left: 165px;
+    width: 70%;
+    margin-right: 25%;
+}
+
+#table, tr {
+    background-color: #f6f7f2;
+    background-image: none;
+    padding: 0%;
+    margin: 0%;
+    border-collapse: separate;
+}
+
+#email-label, #password-label, #remember-label {
+    width: 95px;
+}
+
+th a::after {
+    content: normal;
+}
+

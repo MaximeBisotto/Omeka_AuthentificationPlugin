@@ -2,6 +2,9 @@
 
 class Omeka_Auth_Adapter_CAS implements Zend_Auth_Adapter_Interface
 {
+    /*
+     * strategie for proccess the data send by the CAS
+     */
     private $recupInfoCASStrategie;
 
     /**
@@ -12,7 +15,7 @@ class Omeka_Auth_Adapter_CAS implements Zend_Auth_Adapter_Interface
     public function __construct($fileConfig, $recupInfoCASStrategie)
     {
         require_once(dirname(__FILE__) . '/../librairie/phpCAS/CAS.php');
-        require_once( dirname(__FILE__) . '/../config/' . $fileConfig);
+        require_once( dirname(__FILE__) . '/../config/CAS config/' . $fileConfig);
         phpCAS::client($cas_version, $cas_host, $cas_port, $cas_context);
         if ($cas_server_ca_cert_path == "") {
             phpCAS::setNoCasServerValidation();
@@ -25,6 +28,7 @@ class Omeka_Auth_Adapter_CAS implements Zend_Auth_Adapter_Interface
 
 
     /**
+     * Authentificate the user
      *
      * @return Zend_Auth_Result $resultIdentity
      */
@@ -37,9 +41,9 @@ class Omeka_Auth_Adapter_CAS implements Zend_Auth_Adapter_Interface
         require_once dirname(__FILE__) . '/../../../application/models/Table/User.php';
         $userTab = get_db()->getTable("User");
         $user = $userTab->findByEmail($email);
-        if (empty($user)) {
+        if (empty($user) || $user->active == 0) {
             return new Zend_Auth_Result(
-                Zend_Auth_Result::FAILURE,
+                Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND,
                 -1, "Non enregistré sur Omeka");
         }
 
